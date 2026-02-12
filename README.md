@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## 🚀 Visión General
 
-## Getting Started
+**GadgetsIA** es un emprendimiento enfocado en la curaduría, comercialización e instalación de dispositivos tecnológicos (gadgets) que integran o potencian su uso mediante Inteligencia Artificial. El proyecto nace para cubrir la brecha entre la tecnología compleja y el usuario final en la región de **Santa Fe y alrededores (Argentina)**, transformando "casas comunes" en hogares inteligentes de manera sencilla y confiable.
 
-First, run the development server:
+El diferencial del proyecto radica en la **curaduría técnica** (respaldada por la experiencia de [MDI](https://mdi.com.ar)) y en un modelo de ventas basado en la generación de confianza y el acompañamiento.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🎯 Objetivos del Proyecto
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. **Generar Necesidad:** Educar al público local sobre cómo la IA y la domótica pueden resolver problemas cotidianos de seguridad, ahorro energético y confort.
+2. **Curaduría de Productos:** Filtrar el "humo" del mercado tech para ofrecer solo productos probados que funcionen de manera fluida.
+3. **Proceso de Venta Humano:** Eliminar la fricción y el miedo a la compra técnica mediante un asistente interactivo y soporte directo por canales humanos (WhatsApp).
+4. **Servicio Llave en Mano:** Ofrecer no solo el hardware, sino la configuración "Ready to Use" para que el cliente no tenga que lidiar con manuales complejos.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🏗️ Alcance (Los 3 Pilares)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+El proyecto se concentra inicialmente en tres verticales de negocio:
 
-## Learn More
+- **Seguridad Inteligente:** Cámaras con visión computacional para detección de humanos y mascotas (IA local), cerraduras biométricas y sensores de entorno.
+- **Clima & Ahorro Energético:** Automatización de aires acondicionados y sistemas de calefacción mediante controladores infrarrojos inteligentes para optimizar el consumo eléctrico.
+- **Iluminación & Ambientes:** Sistemas de luces dinámicas que se adaptan a ritmos circadianos y rutinas diarias.
 
-To learn more about Next.js, take a look at the following resources:
+## 📊 Estado Actual: Fase de Prototipado (MVP)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Actualmente, el proyecto se encuentra en su fase de **Producto Mínimo Viable**.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- [x] **Dominio Registrado:** gadgetsia.com.ar
+- [x] **Identidad Visual:** Branding definido (Gadgets + **IA**).
+- [x] **Interfaz Web:** Landing page interactiva desarrollada en React con:
+    - Tech Cursor personalizado.
+    - Sistema de "Reveals" para animaciones de scroll.
+    - **Configurador v2.0:** Un wizard que diagnostica la necesidad del usuario y recomienda un kit específico.
+    - **Checkout Simulado:** Flujo de compra completo que simula la pasarela de Mercado Pago para generar confianza.
+- [ ] **Logística:** Definición de proveedores locales para stock inicial (Tapo, Broadlink, Wiz).
+- [ ] **Lanzamiento:** Próximo despliegue en entornos de producción (Vercel/Netlify).
 
-## Deploy on Vercel
+## 🛠️ Stack Tecnológico
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+La web está construida bajo los siguientes estándares de modernidad:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Framework:** React
+- **Estilos:** Tailwind CSS (Utilizando una estética *Dark Tech* minimalista).
+- **Iconografía:** Lucide React (Customizada para un look futurista).
+- **Interacciones:** Framer Motion / Custom Hooks para animaciones y cursores.
+
+## 👤 Equipo & Respaldo
+
+El proyecto cuenta con el respaldo técnico y la visión estratégica de **Mariano** (Senior Developer) a través de **MDI Solutions**, asegurando que cada solución implementada sea técnicamente sólida y escalable.
+
+**GadgetsIA - Santa Fe, Argentina - 2026**

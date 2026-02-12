@@ -30,7 +30,7 @@ const WHATSAPP_NUMBER = "5493426115800";
 
 // --- UTILS & HOOKS ---
 
-const useReveal = (): [React.RefObject<HTMLDivElement>, boolean] => {
+const useReveal = (): [React.RefObject<HTMLDivElement | null>, boolean] => {
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -197,7 +197,11 @@ const BrandLogo = () => (
   </div>
 );
 
-const Header = ({ onOpenCart }) => (
+interface HeaderProps {
+  onOpenCart: () => void;
+}
+
+const Header = ({ onOpenCart }: HeaderProps) => (
   <nav className="fixed top-0 w-full z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/50 transition-all duration-300">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="flex justify-between items-center h-20">
@@ -316,7 +320,12 @@ const PillarCard: React.FC<PillarCardProps> = ({
           <p className="text-xl font-bold text-white font-mono">${price.toLocaleString()}</p>
         </div>
         <button 
-          onClick={() => document.getElementById('wizard').scrollIntoView({ behavior: 'smooth' })}
+          onClick={() => {
+            const wizardElement = document.getElementById('wizard');
+            if (wizardElement) {
+              wizardElement.scrollIntoView({ behavior: 'smooth' });
+            }
+          }}
           className="text-xs font-bold text-white bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-lg transition border border-slate-700 hover:border-slate-600 uppercase tracking-wide"
         >
           Armar
@@ -466,19 +475,26 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, product 
   );
 };
 
+interface WizardSelections {
+  focus: string | null;
+  room: string | null;
+  techLevel?: 'expert' | 'beginner' | null;
+}
+
 interface WizardProps {
   onBuy: (product: Product) => void;
 }
 
 const Wizard: React.FC<WizardProps> = ({ onBuy }) => {
   const [step, setStep] = useState<number>(1);
-  const [selections, setSelections] = useState<{ focus: string | null; room: string | null }>({ 
+  const [selections, setSelections] = useState<WizardSelections>({ 
     focus: null, 
-    room: null 
+    room: null,
+    techLevel: null
   });
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleNext = (key, value) => {
+  const handleNext = (key: keyof WizardSelections, value: string | null) => {
     setSelections({ ...selections, [key]: value });
     if (step < 3) {
       setStep(step + 1);
