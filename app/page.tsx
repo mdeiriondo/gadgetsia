@@ -1047,7 +1047,6 @@ export default function App() {
 
         {/* NEW: Problem Section */}
         <ProblemSection />
-        <VisionSection />
 
         <section
           id="pillars"
@@ -1073,11 +1072,13 @@ export default function App() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
               {PILLARS.map((p, idx) => (
                 <Reveal key={p.id} delay={idx * 150}>
-                  <PillarCard
-                    {...p}
-                    features={PRODUCTS[p.id].features}
-                    price={PRODUCTS[p.id].price}
-                  />
+                  <Link href={`/productos/${p.id}`}>
+                    <PillarCard
+                      {...p}
+                      features={PRODUCTS[p.id].features}
+                      price={PRODUCTS[p.id].price}
+                    />
+                  </Link>
                 </Reveal>
               ))}
             </div>
@@ -1126,6 +1127,8 @@ export default function App() {
             </Reveal>
           </div>
         </section>
+
+        <VisionSection />
 
         <footer className="bg-slate-950 py-24 border-t border-slate-900">
           <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-12">
