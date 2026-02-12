@@ -207,10 +207,14 @@ const PILLARS: Array<{
 
 // --- COMPONENTS ---
 
-const BrandLogo = () => (
-  <div className="flex items-center gap-2 group cursor-pointer" onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>
-    <div className="relative w-10 h-10 flex items-center justify-center bg-slate-900 rounded-xl border border-slate-700 overflow-hidden group-hover:border-indigo-500 transition-colors shadow-[0_0_15px_rgba(99,102,241,0.1)]">
-        <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500/10 to-transparent"></div>
+interface BrandLogoProps {
+  className?: string;
+}
+
+const BrandLogo = ({ className = '' }: BrandLogoProps) => (
+  <div className={`flex items-center gap-2 group cursor-pointer ${className}`} onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>
+    <div className="relative w-[175px] h-10 flex items-center justify-center overflow-hidden">
+      <img src="/logo.webp" alt="Gadgets IA" className="w-full h-full object-contain" />
         <Cpu className="w-6 h-6 text-indigo-400" />
     </div>
     <span className="text-xl font-bold tracking-tight text-white font-mono">
@@ -225,11 +229,11 @@ interface HeaderProps {
 
 const Header = ({ onOpenCart }: HeaderProps) => (
   <nav className="fixed top-0 w-full z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/50 transition-all duration-300">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="flex justify-between items-center h-20">
-        <BrandLogo />
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center">
+      <div className="flex-1 flex justify-between items-center">
+        <BrandLogo className="flex-shrink-0" />
         
-        <div className="hidden md:flex space-x-8 items-center">
+        <div className="hidden md:flex space-x-8 items-center absolute left-1/2 transform -translate-x-1/2">
           <Link href="#problem" className="text-xs font-bold text-slate-400 hover:text-white transition tracking-widest hover:scale-105 transform">EL PROBLEMA</Link>
           <Link href="#pillars" className="text-xs font-bold text-slate-400 hover:text-white transition tracking-widest hover:scale-105 transform">SOLUCIONES</Link>
           <div className="h-4 w-px bg-slate-800"></div>

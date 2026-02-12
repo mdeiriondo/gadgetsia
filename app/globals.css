@@ -24,3 +24,11 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.relative.w-10.h-10.flex.items-center.justify-center.overflow-hidden {
+  width: 175px;
+}
+
+span.text-xl.font-bold.tracking-tight.text-white.font-mono {
+  display: none;
+}

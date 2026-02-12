@@ -16,6 +16,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Gadgets IA",
   description: "Tecnología Smart Home Santa Fe",
+  icons: {
+    icon: "/favicon.webp",
+    apple: "/favicon.webp",
+    shortcut: "/favicon.webp"
+  }
 };
 
 export default function RootLayout({
