@@ -595,10 +595,16 @@ const Wizard: React.FC<WizardProps> = ({ onBuy }) => {
                       </div>
                       <p className="text-slate-400 leading-relaxed">{recommended.description}</p>
                       <div className="flex flex-col sm:flex-row gap-5 pt-8">
-                        <button onClick={() => onBuy(recommended)} className="flex-1 bg-white hover:bg-indigo-50 text-slate-950 py-5 px-8 rounded-2xl font-black text-lg transition shadow-2xl">
+                        <button 
+                          onClick={() => onBuy(recommended)} 
+                          className="flex-1 bg-white hover:bg-indigo-50 text-slate-950 py-5 px-6 rounded-2xl font-black text-base sm:text-lg transition shadow-2xl whitespace-nowrap"
+                        >
                           COMPRAR KIT
                         </button>
-                        <button onClick={() => window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=Hola GadgetsIA, quiero asesoramiento sobre el kit ${recommended.name}`, '_blank')} className="flex-1 bg-transparent border-2 border-slate-800 hover:border-green-500 text-white hover:text-green-400 py-5 px-8 rounded-2xl font-black text-lg transition">
+                        <button 
+                          onClick={() => window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=Hola GadgetsIA, quiero asesoramiento sobre el kit ${recommended.name}`, '_blank')} 
+                          className="flex-1 bg-transparent border-2 border-slate-800 hover:border-green-500 text-white hover:text-green-400 py-5 px-6 rounded-2xl font-black text-base sm:text-lg transition whitespace-nowrap"
+                        >
                           ASESORARME
                         </button>
                       </div>
