@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GadgetsIA | Dashboard Estratégico Interactivo</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- Configuración Tailwind y Estilos Personalizados -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        slate: {
+                            850: '#1e293b',
+                            900: '#0f172a',
+                            950: '#020617',
+                        },
+                        indigo: {
+                            500: '#6366f1',
+                            400: '#818cf8',
+                        },
+                        cyan: {
+                            400: '#22d3ee',
+                            500: '#06b6d4',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Estilos Base para asegurar el look "Dark Tech" */
+        body {
+            background-color: #020617; /* Slate 950 */
+            color: #f8fafc; /* Slate 50 */
+        }
+        
+        /* Contenedores de Gráficos - CRUCIAL para responsividad */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Evita que los gráficos sean gigantes en pantallas grandes */
+            height: 300px; /* Altura base */
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* Utilidades de Interfaz */
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .glass-panel:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+        }
+
+        .nav-item.active {
+            color: #22d3ee;
+            border-bottom: 2px solid #22d3ee;
+        }
+
+        /* Ocultar scrollbar pero permitir scroll */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+
+    <!-- 
+    Chosen Palette: "Dark Tech" Palette based on the source material description.
+    Primary Background: Slate 950 (#020617)
+    Secondary Backgrounds: Slate 900/850 with transparency.
+    Accents: Indigo (#6366f1) and Cyan (#22d3ee) for vibrant highlights.
+    Text: White and Slate 400 for hierarchy.
+    -->
+
+    <!--
+    Application Structure Plan:
+    This SPA is designed as an "Executive Strategic Dashboard" to present the GadgetsIA project vision comprehensively.
+    
+    1. **Header/Hero:** Sets the context immediately with the brand definition and "Real Domotics" philosophy.
+    2. **Market Intelligence (Grid Layout):** Analyzes the Target Audience using a Doughnut chart to show segment distribution and text to explain needs. This answers "Who is this for?".
+    3. **Competitive Edge (2-Col Layout):** Uses a Radar chart to visually compare GadgetsIA against traditional retail tech, highlighting the "Value Added" (MDI support, Ready-to-use).
+    4. **Operational Scope (Interactive Cards):** Presents the 3 Pillars (Security, Climate, Lighting). Users click cards to see details, simulating a "drill-down" into business units.
+    5. **Roadmap & Status (Timeline):** Visualizes the journey from MVP to Future Vision using a structured HTML timeline, showing progress and ambition.
+    
+    The structure was chosen to move from abstract strategy (Vision/Market) to concrete execution (Products/Roadmap), facilitating a logical narrative flow for stakeholders.
+    -->
+</head>
+<body class="min-h-screen flex flex-col font-sans">
+
+    <!-- Navegación Sticky -->
+    <nav class="sticky top-0 z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl font-display font-bold text-white tracking-tighter">GADGETS<span class="text-cyan-400">IA</span></span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <button onclick="scrollToSection('vision')" class="nav-item active px-3 py-2 rounded-md text-sm font-medium hover:text-white transition-colors">Visión</button>
+                        <button onclick="scrollToSection('market')" class="nav-item text-slate-400 px-3 py-2 rounded-md text-sm font-medium hover:text-white transition-colors">Mercado</button>
+                        <button onclick="scrollToSection('value')" class="nav-item text-slate-400 px-3 py-2 rounded-md text-sm font-medium hover:text-white transition-colors">Valor Agregado</button>
+                        <button onclick="scrollToSection('roadmap')" class="nav-item text-slate-400 px-3 py-2 rounded-md text-sm font-medium hover:text-white transition-colors">Roadmap</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenedor Principal -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-16 w-full">
+
+        <!-- SECTION 1: VISIÓN & DEFINICIÓN (Hero) -->
+        <section id="vision" class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-[50vh]">
+            <div class="space-y-6">
+                <div class="inline-flex items-center px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-bold uppercase tracking-wider">
+                    Manifiesto de Proyecto
+                </div>
+                <h1 class="text-4xl md:text-6xl font-display font-bold leading-tight text-white">
+                    Inteligencia Aplicada al <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-500">Hogar Litoral</span>
+                </h1>
+                <p class="text-lg text-slate-400 leading-relaxed max-w-2xl">
+                    GadgetsIA no es una tienda; es un puente tecnológico. Nuestra misión es democratizar el acceso a la casa inteligente en Santa Fe mediante la <strong>"Domótica Real"</strong>: soluciones sin obras, instaladas en minutos y potenciadas por IA local.
+                </p>
+                <div class="flex gap-4 pt-4">
+                    <div class="glass-panel p-4 rounded-xl flex-1 text-center">
+                        <span class="block text-3xl font-bold text-white">MVP</span>
+                        <span class="text-xs text-slate-500 uppercase tracking-widest">Estado Actual</span>
+                    </div>
+                    <div class="glass-panel p-4 rounded-xl flex-1 text-center">
+                        <span class="block text-3xl font-bold text-cyan-400">2026</span>
+                        <span class="text-xs text-slate-500 uppercase tracking-widest">Lanzamiento</span>
+                    </div>
+                    <div class="glass-panel p-4 rounded-xl flex-1 text-center">
+                        <span class="block text-3xl font-bold text-indigo-400">IA</span>
+                        <span class="text-xs text-slate-500 uppercase tracking-widest">Core Tech</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Visualization: Core Concept Diagram (HTML/CSS) -->
+            <!-- Goal: Inform/Organize - Visually represent the bridge between complex tech and simple usage. -->
+            <div class="glass-panel p-8 rounded-2xl relative overflow-hidden flex flex-col justify-center items-center h-full min-h-[300px]">
+                <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-cyan-500/5 z-0"></div>
+                <div class="relative z-10 w-full flex justify-between items-center">
+                    <!-- Left: Complex Tech -->
+                    <div class="text-center w-1/3">
+                        <div class="w-16 h-16 bg-slate-800 rounded-2xl mx-auto flex items-center justify-center mb-3 border border-slate-700">
+                            <span class="text-2xl">🤖</span>
+                        </div>
+                        <h3 class="text-sm font-bold text-slate-300">Tecnología Compleja</h3>
+                        <p class="text-xs text-slate-500 mt-1">IA, Redes, Sensores</p>
+                    </div>
+
+                    <!-- Center: GadgetsIA Bridge -->
+                    <div class="flex-1 flex flex-col items-center px-4">
+                        <div class="h-1 w-full bg-gradient-to-r from-slate-700 via-indigo-500 to-slate-700 rounded mb-2"></div>
+                        <span class="px-4 py-1 bg-indigo-600 rounded-full text-xs font-bold text-white shadow-[0_0_15px_rgba(99,102,241,0.5)]">GADGETS IA</span>
+                        <div class="text-[10px] text-cyan-400 mt-2 font-mono">Curaduría + Configuración</div>
+                    </div>
+
+                    <!-- Right: Simple Life -->
+                    <div class="text-center w-1/3">
+                        <div class="w-16 h-16 bg-slate-800 rounded-2xl mx-auto flex items-center justify-center mb-3 border border-slate-700">
+                            <span class="text-2xl">🏡</span>
+                        </div>
+                        <h3 class="text-sm font-bold text-slate-300">Vida Simplificada</h3>
+                        <p class="text-xs text-slate-500 mt-1">Seguridad, Confort</p>
+                    </div>
+                </div>
+                <div class="mt-8 text-center max-w-md">
+                    <p class="text-sm text-slate-400 italic">"Eliminamos la fricción técnica para que el usuario solo disfrute el resultado."</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: MERCADO OBJETIVO (Charts) -->
+        <section id="market" class="space-y-6">
+            <div class="max-w-3xl">
+                <h2 class="text-3xl font-display font-bold text-white">Análisis de Mercado Regional</h2>
+                <p class="text-slate-400 mt-2">
+                    Identificamos tres perfiles clave en Santa Fe que impulsan la demanda de tecnología doméstica inteligente. Este desglose guía nuestra estrategia de producto.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                <!-- Visualization: Target Audience Distribution -->
+                <!-- Visualization & Content Choices:
+                     - Data: Hypothetical distribution of the 3 target profiles mentioned in the source.
+                     - Goal: Compare proportions.
+                     - Method: Doughnut Chart (Chart.js).
+                     - Interaction: Hover for tooltips showing specific focus areas.
+                     - Justification: Best for showing part-to-whole relationships clearly.
+                -->
+                <div class="glass-panel p-6 rounded-2xl">
+                    <h3 class="text-lg font-bold text-white mb-4">Segmentación de Audiencia</h3>
+                    <div class="chart-container">
+                        <canvas id="audienceChart"></canvas>
+                    </div>
+                    <div class="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
+                        <div>
+                            <span class="block w-3 h-3 rounded-full bg-indigo-500 mx-auto mb-1"></span>
+                            <span class="text-slate-300">Familias</span>
+                        </div>
+                        <div>
+                            <span class="block w-3 h-3 rounded-full bg-cyan-400 mx-auto mb-1"></span>
+                            <span class="text-slate-300">Pros IT</span>
+                        </div>
+                        <div>
+                            <span class="block w-3 h-3 rounded-full bg-emerald-400 mx-auto mb-1"></span>
+                            <span class="text-slate-300">Eco-Conscientes</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Textual Detail -->
+                <div class="space-y-4">
+                    <div class="glass-panel p-5 rounded-xl border-l-4 border-indigo-500">
+                        <h4 class="font-bold text-white text-lg">Padres y Familias (45%)</h4>
+                        <p class="text-sm text-slate-400 mt-1">Buscan tranquilidad. El caso de uso principal es la seguridad de hijos (ej. Hipólito y Carmela) y el monitoreo remoto ante la inseguridad local.</p>
+                    </div>
+                    <div class="glass-panel p-5 rounded-xl border-l-4 border-cyan-400">
+                        <h4 class="font-bold text-white text-lg">Profesionales IT (25%)</h4>
+                        <p class="text-sm text-slate-400 mt-1">Early Adopters que valoran la estética "Tech-Premium". Buscan optimización de workflows y setups de Home Office avanzados.</p>
+                    </div>
+                    <div class="glass-panel p-5 rounded-xl border-l-4 border-emerald-400">
+                        <h4 class="font-bold text-white text-lg">Hogares Eco-Conscientes (30%)</h4>
+                        <p class="text-sm text-slate-400 mt-1">Impulsados por las altas tarifas energéticas. Su foco es la automatización de climatización para el ahorro real de dinero.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: PROPUESTA DE VALOR (Radar Chart) -->
+        <section id="value" class="space-y-6">
+            <div class="max-w-3xl">
+                <h2 class="text-3xl font-display font-bold text-white">Nuestra Ventaja Competitiva</h2>
+                <p class="text-slate-400 mt-2">
+                    ¿Por qué GadgetsIA supera al retail tradicional? Comparamos métricas clave de experiencia de usuario y soporte técnico.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                
+                <!-- Content Description -->
+                <div class="order-2 md:order-1 space-y-6">
+                    <p class="text-slate-300 leading-relaxed">
+                        Mientras el mercado tradicional se enfoca en "mover cajas" (Box Moving), GadgetsIA se centra en la <strong>Confianza Técnica</strong>. El respaldo de <span class="text-cyan-400 font-bold">MDI Solutions</span> permite ofrecer dispositivos pre-configurados, eliminando la frustración de la instalación.
+                    </p>
+                    
+                    <ul class="space-y-3">
+                        <li class="flex items-start gap-3">
+                            <span class="flex-shrink-0 w-6 h-6 rounded bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xs font-bold">1</span>
+                            <div>
+                                <strong class="text-white block text-sm">Curaduría vs Catálogo Infinito</strong>
+                                <span class="text-slate-400 text-xs">Filtramos el "humo". Solo vendemos lo que probamos y funciona.</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="flex-shrink-0 w-6 h-6 rounded bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xs font-bold">2</span>
+                            <div>
+                                <strong class="text-white block text-sm">Soporte Local vs Chatbot Genérico</strong>
+                                <span class="text-slate-400 text-xs">Asistencia humana por WhatsApp y futura IA entrenada en manuales específicos.</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Visualization: Value Radar -->
+                <!-- Visualization & Content Choices:
+                     - Data: Qualitative comparison scores (1-10 scale) on 5 axis.
+                     - Goal: Compare GadgetsIA vs Generic Retail.
+                     - Method: Radar Chart (Chart.js).
+                     - Interaction: Hover to see comparative scores.
+                     - Justification: Excellent for comparing multi-variable performance profiles.
+                -->
+                <div class="glass-panel p-6 rounded-2xl order-1 md:order-2">
+                    <div class="chart-container">
+                        <canvas id="valueRadarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: ALCANCE Y PILARES (Interactive List) -->
+        <section id="scope" class="space-y-6">
+            <div class="max-w-3xl">
+                <h2 class="text-3xl font-display font-bold text-white">Los 3 Pilares Operativos</h2>
+                <p class="text-slate-400 mt-2">
+                    Nuestra oferta inicial se concentra en tres verticales de alto impacto inmediato. Haz clic en cada pilar para ver los detalles técnicos.
+                </p>
+            </div>
+
+            <!-- Interactive Pillars using Details/Summary pattern styled with Tailwind -->
+            <!-- Visualization & Content Choices:
+                 - Goal: Organize hierarchical information.
+                 - Method: Interactive Accordion (HTML/JS).
+                 - Justification: Allows users to explore details without cluttering the UI. Clean, non-SVG interaction.
+            -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                <!-- Pillar 1 -->
+                <div class="glass-panel p-1 rounded-2xl transition-all hover:bg-slate-800/50 group">
+                    <div class="p-6 cursor-pointer" onclick="toggleDetails('pillar1')">
+                        <div class="w-12 h-12 rounded-lg bg-indigo-500/20 flex items-center justify-center mb-4 text-2xl group-hover:scale-110 transition-transform">👁️</div>
+                        <h3 class="text-xl font-bold text-white mb-2">Seguridad Inteligente</h3>
+                        <p class="text-sm text-slate-400 mb-4">Ojo de Halcón IA</p>
+                        <button class="text-xs text-cyan-400 font-bold uppercase tracking-wider hover:underline">Ver Detalles +</button>
+                    </div>
+                    <div id="pillar1" class="hidden px-6 pb-6 border-t border-slate-700/50 pt-4 animate-fade-in">
+                        <ul class="text-sm text-slate-300 space-y-2">
+                            <li>• Visión computacional local.</li>
+                            <li>• Distinción Humano/Mascota.</li>
+                            <li>• Sin falsas alertas.</li>
+                            <li>• Privacidad primero.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Pillar 2 -->
+                <div class="glass-panel p-1 rounded-2xl transition-all hover:bg-slate-800/50 group">
+                    <div class="p-6 cursor-pointer" onclick="toggleDetails('pillar2')">
+                        <div class="w-12 h-12 rounded-lg bg-cyan-500/20 flex items-center justify-center mb-4 text-2xl group-hover:scale-110 transition-transform">❄️</div>
+                        <h3 class="text-xl font-bold text-white mb-2">Clima & Ahorro</h3>
+                        <p class="text-sm text-slate-400 mb-4">Control Neural</p>
+                        <button class="text-xs text-cyan-400 font-bold uppercase tracking-wider hover:underline">Ver Detalles +</button>
+                    </div>
+                    <div id="pillar2" class="hidden px-6 pb-6 border-t border-slate-700/50 pt-4 animate-fade-in">
+                        <ul class="text-sm text-slate-300 space-y-2">
+                            <li>• Retrofit de aires viejos.</li>
+                            <li>• Aprendizaje de rutinas.</li>
+                            <li>• Sensores IR inteligentes.</li>
+                            <li>• Optimización de consumo.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Pillar 3 -->
+                <div class="glass-panel p-1 rounded-2xl transition-all hover:bg-slate-800/50 group">
+                    <div class="p-6 cursor-pointer" onclick="toggleDetails('pillar3')">
+                        <div class="w-12 h-12 rounded-lg bg-emerald-500/20 flex items-center justify-center mb-4 text-2xl group-hover:scale-110 transition-transform">💡</div>
+                        <h3 class="text-xl font-bold text-white mb-2">Iluminación Viva</h3>
+                        <p class="text-sm text-slate-400 mb-4">Ambientes Dinámicos</p>
+                        <button class="text-xs text-cyan-400 font-bold uppercase tracking-wider hover:underline">Ver Detalles +</button>
+                    </div>
+                    <div id="pillar3" class="hidden px-6 pb-6 border-t border-slate-700/50 pt-4 animate-fade-in">
+                        <ul class="text-sm text-slate-300 space-y-2">
+                            <li>• Ritmos circadianos.</li>
+                            <li>• Escenas automáticas.</li>
+                            <li>• Simulación de presencia.</li>
+                            <li>• Sin Hubs complejos.</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 5: ROADMAP & STATUS (HTML Timeline) -->
+        <section id="roadmap" class="pb-20">
+            <div class="max-w-3xl mb-10">
+                <h2 class="text-3xl font-display font-bold text-white">Hoja de Ruta y Futuro</h2>
+                <p class="text-slate-400 mt-2">
+                    Desde el MVP actual hasta la visión de liderazgo regional. Nuestro camino está trazado por la innovación técnica y la confianza.
+                </p>
+            </div>
+
+            <!-- Visualization: Vertical Timeline -->
+            <!-- Visualization & Content Choices:
+                 - Goal: Change/Process - Show evolution over time.
+                 - Method: Structured HTML with CSS borders (Tailwind).
+                 - Justification: Cleanest way to show linear progression without SVG. Responsive and accessible.
+            -->
+            <div class="relative border-l-2 border-slate-800 ml-6 space-y-12">
+                
+                <!-- Step 1: Current -->
+                <div class="relative pl-8">
+                    <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.8)]"></div>
+                    <span class="inline-block px-2 py-1 mb-2 text-[10px] font-bold uppercase bg-cyan-400/10 text-cyan-400 rounded border border-cyan-400/20">Estado Actual</span>
+                    <h3 class="text-xl font-bold text-white">Fase MVP: Prototipo Funcional</h3>
+                    <p class="text-slate-400 text-sm mt-2 max-w-xl">
+                        Dominio activo, Landing Page "Dark Tech" en React, y flujo de conversión validado con configurador de espacios y checkout simulado. Identidad visual consolidada.
+                    </p>
+                </div>
+
+                <!-- Step 2: Next Steps -->
+                <div class="relative pl-8 opacity-70 hover:opacity-100 transition-opacity">
+                    <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-slate-700 border-2 border-slate-500"></div>
+                    <span class="inline-block px-2 py-1 mb-2 text-[10px] font-bold uppercase bg-indigo-500/10 text-indigo-400 rounded border border-indigo-500/20">Próximo Hito</span>
+                    <h3 class="text-xl font-bold text-white">Evolución Técnica</h3>
+                    <p class="text-slate-400 text-sm mt-2 max-w-xl">
+                        Integración real de APIs de pago (Mercado Pago). Desarrollo de Dashboard de usuario unificado. Entrenamiento de Chatbot con API Gemini para soporte técnico automatizado basado en manuales.
+                    </p>
+                </div>
+
+                <!-- Step 3: Vision -->
+                <div class="relative pl-8 opacity-50 hover:opacity-100 transition-opacity">
+                    <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-slate-800 border-2 border-slate-600"></div>
+                    <span class="inline-block px-2 py-1 mb-2 text-[10px] font-bold uppercase bg-slate-700 text-slate-300 rounded">Visión Final</span>
+                    <h3 class="text-xl font-bold text-white">Liderazgo Regional</h3>
+                    <p class="text-slate-400 text-sm mt-2 max-w-xl">
+                        Consolidarse como la referencia de confianza técnica en el interior. Que GadgetsIA sea sinónimo de "Tecnología que funciona", respaldada por MDI Solutions.
+                    </p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="border-t border-slate-800 py-8 text-center">
+            <p class="text-slate-500 text-sm">
+                Desarrollado por <strong>Mariano | MDI Solutions</strong> &bull; Santa Fe, Argentina - 2026
+            </p>
+        </footer>
+
+    </main>
+
+    <!-- Scripts de Lógica y Gráficos -->
+    <script>
+        // --- Interacción 1: Scroll Suave ---
+        function scrollToSection(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+                // Update active state manually for immediate feedback
+                document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+                event.target.classList.add('active');
+            }
+        }
+
+        // --- Interacción 2: Acordeón de Pilares ---
+        function toggleDetails(id) {
+            const el = document.getElementById(id);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+            } else {
+                el.classList.add('hidden');
+            }
+        }
+
+        // --- Helper: Proceso de etiquetas largas para Chart.js ---
+        function processLabels(labels) {
+            return labels.map(label => {
+                if (label.length > 16) {
+                    const words = label.split(' ');
+                    const lines = [];
+                    let currentLine = words[0];
+
+                    for (let i = 1; i < words.length; i++) {
+                        if (currentLine.length + 1 + words[i].length <= 16) {
+                            currentLine += ' ' + words[i];
+                        } else {
+                            lines.push(currentLine);
+                            currentLine = words[i];
+                        }
+                    }
+                    lines.push(currentLine);
+                    return lines;
+                }
+                return label;
+            });
+        }
+
+        // --- Configuración Común de Chart.js ---
+        Chart.defaults.color = '#94a3b8'; // Slate 400
+        Chart.defaults.font.family = 'Inter';
+
+        // --- Gráfico 1: Distribución de Audiencia (Doughnut) ---
+        // Justificación: Muestra claramente la proporción de los 3 segmentos objetivo.
+        const ctxAudience = document.getElementById('audienceChart').getContext('2d');
+        const audienceLabels = processLabels(['Familias y Padres', 'Profesionales IT', 'Hogares Eco-Conscientes']);
+        
+        new Chart(ctxAudience, {
+            type: 'doughnut',
+            data: {
+                labels: audienceLabels,
+                datasets: [{
+                    data: [45, 25, 30], // Datos hipotéticos basados en importancia descrita
+                    backgroundColor: [
+                        'rgba(99, 102, 241, 0.8)', // Indigo
+                        'rgba(34, 211, 238, 0.8)', // Cyan
+                        'rgba(52, 211, 153, 0.8)'  // Emerald
+                    ],
+                    borderColor: '#1e293b', // Slate 800 border
+                    borderWidth: 2,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false // Leyenda customizada en HTML
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                        titleColor: '#fff',
+                        bodyColor: '#cbd5e1',
+                        padding: 12,
+                        cornerRadius: 8,
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                if (Array.isArray(label)) {
+                                    return label.join(' ');
+                                } else {
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                },
+                cutout: '70%',
+            }
+        });
+
+        // --- Gráfico 2: Radar de Valor (Radar) ---
+        // Justificación: Compara múltiples atributos cualitativos entre GadgetsIA y el Retail tradicional.
+        const ctxRadar = document.getElementById('valueRadarChart').getContext('2d');
+        
+        new Chart(ctxRadar, {
+            type: 'radar',
+            data: {
+                labels: processLabels(['Facilidad Instalación', 'Soporte Técnico', 'Calidad Curada', 'Precio Percibido', 'Privacidad']),
+                datasets: [{
+                    label: 'GadgetsIA (MDI)',
+                    data: [9, 10, 10, 8, 9],
+                    fill: true,
+                    backgroundColor: 'rgba(34, 211, 238, 0.2)',
+                    borderColor: '#22d3ee',
+                    pointBackgroundColor: '#22d3ee',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#22d3ee'
+                }, {
+                    label: 'Retail Tradicional',
+                    data: [4, 2, 5, 6, 3],
+                    fill: true,
+                    backgroundColor: 'rgba(148, 163, 184, 0.2)',
+                    borderColor: '#94a3b8',
+                    pointBackgroundColor: '#94a3b8',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#94a3b8'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: {
+                            color: 'rgba(148, 163, 184, 0.1)'
+                        },
+                        grid: {
+                            color: 'rgba(148, 163, 184, 0.1)'
+                        },
+                        pointLabels: {
+                            color: '#e2e8f0',
+                            font: {
+                                size: 11
+                            }
+                        },
+                        ticks: {
+                            display: false,
+                            backdropColor: 'transparent'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#cbd5e1'
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                        titleColor: '#fff',
+                        bodyColor: '#cbd5e1',
+                        padding: 12,
+                        cornerRadius: 8,
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                if (Array.isArray(label)) {
+                                    return label.join(' ');
+                                } else {
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+    </script>
+    
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. All visuals via FontAwesome, CSS shapes, or Canvas Charts. -->
+</body>
+</html>

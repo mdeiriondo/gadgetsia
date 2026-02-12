@@ -1,0 +1,11 @@
+<svg width="400" height="100" viewBox="0 0 400 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="400" height="100" fill="#020617"/>
+<text x="40" y="65" font-family="Inter, sans-serif" font-weight="800" font-size="48" fill="white" letter-spacing="-1">gadgets</text>
+<path d="M265 65H280V28H265V65ZM290 65H310L325 28H308L300 50L292 28H275L290 65Z" fill="url(#paint_text_linear)"/>
+<defs>
+<linearGradient id="paint_text_linear" x1="265" y1="46.5" x2="325" y2="46.5" gradientUnits="userSpaceOnUse">
+<stop stop-color="#22D3EE"/>
+<stop offset="1" stop-color="#6366F1"/>
+</linearGradient>
+</defs>
+</svg>

@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GadgetsIA | Visión y Roadmap</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome for Icons (No SVG tags) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        slate: {
+                            850: '#151f32',
+                            900: '#0f172a',
+                            950: '#020617',
+                        },
+                        indigo: {
+                            450: '#6366f1', // Custom tint
+                        },
+                        cyan: {
+                            450: '#22d3ee', // Custom tint
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #020617;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+        .tech-border {
+            position: relative;
+        }
+        .tech-border::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 0%;
+            height: 1px;
+            background: linear-gradient(90deg, #6366f1, #22d3ee);
+            transition: width 0.4s ease;
+        }
+        .tech-border:hover::after {
+            width: 100%;
+        }
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 300px;
+            width: 100%;
+            max-width: 500px;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+        .glow-text {
+            text-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+        }
+        .nav-active {
+            color: #22d3ee;
+            border-left: 2px solid #22d3ee;
+            background: linear-gradient(90deg, rgba(34,211,238,0.1) 0%, transparent 100%);
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-indigo-500/30 selection:text-indigo-200">
+
+    <!-- Chosen Palette: Dark Tech (Slate 950 base) with Indigo/Cyan accents for a futuristic, trustworthy feel. -->
+
+    <div class="flex h-screen overflow-hidden">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="w-20 lg:w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between hidden md:flex z-20">
+            <div>
+                <div class="h-20 flex items-center justify-center lg:justify-start lg:px-6 border-b border-slate-800">
+                    <div class="w-8 h-8 bg-indigo-600 rounded flex items-center justify-center mr-0 lg:mr-3 shadow-lg shadow-indigo-500/20">
+                        <i class="fa-solid fa-microchip text-white text-sm"></i>
+                    </div>
+                    <span class="font-mono font-bold text-lg tracking-tighter hidden lg:block">GADGETS<span class="text-cyan-400">IA</span></span>
+                </div>
+                
+                <nav class="mt-8 flex flex-col gap-2 px-2">
+                    <button onclick="scrollToSection('intro')" id="nav-intro" class="nav-item flex items-center p-3 text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-lg transition-all text-sm font-medium nav-active">
+                        <i class="fa-solid fa-bullseye w-6 text-center"></i>
+                        <span class="hidden lg:block ml-3">Definición & Fin</span>
+                    </button>
+                    <button onclick="scrollToSection('target')" id="nav-target" class="nav-item flex items-center p-3 text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-lg transition-all text-sm font-medium">
+                        <i class="fa-solid fa-users-viewfinder w-6 text-center"></i>
+                        <span class="hidden lg:block ml-3">Público Objetivo</span>
+                    </button>
+                    <button onclick="scrollToSection('scope')" id="nav-scope" class="nav-item flex items-center p-3 text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-lg transition-all text-sm font-medium">
+                        <i class="fa-solid fa-layer-group w-6 text-center"></i>
+                        <span class="hidden lg:block ml-3">Alcance (3 Pilares)</span>
+                    </button>
+                    <button onclick="scrollToSection('roadmap')" id="nav-roadmap" class="nav-item flex items-center p-3 text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-lg transition-all text-sm font-medium">
+                        <i class="fa-solid fa-road w-6 text-center"></i>
+                        <span class="hidden lg:block ml-3">Estado & Futuro</span>
+                    </button>
+                </nav>
+            </div>
+
+            <div class="p-4 border-t border-slate-800">
+                <div class="bg-slate-800/50 rounded-xl p-4 hidden lg:block">
+                    <p class="text-xs text-slate-400 mb-1">Lead Developer</p>
+                    <div class="flex items-center gap-2">
+                        <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                        <span class="text-sm font-bold text-white">Mariano</span>
+                    </div>
+                    <p class="text-[10px] text-slate-500 mt-2 font-mono">MDI SOLUTIONS</p>
+                </div>
+                <div class="lg:hidden flex justify-center">
+                    <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-y-auto relative scroll-smooth" id="main-scroll">
+            
+            <!-- Mobile Header -->
+            <div class="md:hidden h-16 bg-slate-900/80 backdrop-blur border-b border-slate-800 flex items-center justify-between px-4 sticky top-0 z-50">
+                <span class="font-mono font-bold text-lg">GADGETS<span class="text-cyan-400">IA</span></span>
+                <span class="text-xs text-slate-500 border border-slate-700 px-2 py-1 rounded">DOC. VISIÓN</span>
+            </div>
+
+            <div class="max-w-5xl mx-auto px-6 py-12 md:py-20 space-y-32">
+
+                <!-- Application Structure Plan:
+                     1. Intro Section: High-level definition and core philosophy ("Domótica Real").
+                     2. Target Audience: Interactive cards to explore the 3 user profiles.
+                     3. Scope (Visual): Dashboard showing the 3 technical pillars.
+                     4. Roadmap: Vertical timeline tracking MVP to Future Vision.
+                     This structure moves from abstract concept to concrete execution plan.
+                -->
+
+                <!-- SECTION 1: DEFINITION -->
+                <section id="intro" class="scroll-mt-24">
+                    <div class="mb-6 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-mono font-bold">
+                        <i class="fa-solid fa-rocket"></i> MANIFIESTO DE PROYECTO
+                    </div>
+                    <h1 class="text-5xl md:text-7xl font-black text-white mb-8 tracking-tight glow-text leading-tight">
+                        Inteligencia Aplicada<br>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">al Hogar Litoral</span>
+                    </h1>
+                    
+                    <div class="grid md:grid-cols-2 gap-12 items-center">
+                        <div>
+                            <p class="text-lg text-slate-400 leading-relaxed mb-6">
+                                <strong class="text-white">GadgetsIA</strong> no es una tienda de electrónica convencional. Es un puente entre la Inteligencia Artificial avanzada y la vida cotidiana en Santa Fe.
+                            </p>
+                            <div class="glass-panel p-6 rounded-2xl border-l-4 border-cyan-400">
+                                <h3 class="text-xl font-bold text-white mb-2 flex items-center gap-2">
+                                    <i class="fa-solid fa-house-signal text-cyan-400"></i> Domótica Real
+                                </h3>
+                                <p class="text-slate-400 text-sm">
+                                    Soluciones que no requieren reformas estructurales, se instalan en minutos y utilizan algoritmos para resolver problemas concretos del día a día.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 text-center hover:-translate-y-1 transition-transform">
+                                <div class="text-3xl font-bold text-indigo-400 mb-1">0%</div>
+                                <div class="text-xs text-slate-500 font-mono uppercase">Fricción Técnica</div>
+                            </div>
+                            <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 text-center hover:-translate-y-1 transition-transform">
+                                <div class="text-3xl font-bold text-cyan-400 mb-1">100%</div>
+                                <div class="text-xs text-slate-500 font-mono uppercase">Respaldo MDI</div>
+                            </div>
+                            <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 text-center col-span-2 hover:-translate-y-1 transition-transform">
+                                <div class="text-xl font-bold text-white mb-1">Ready-to-Use</div>
+                                <div class="text-xs text-slate-500 font-mono uppercase">Configuración Llave en Mano</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECTION 2: TARGET AUDIENCE -->
+                <section id="target" class="scroll-mt-24">
+                    <div class="flex items-center justify-between mb-10">
+                        <div>
+                            <h2 class="text-3xl font-bold text-white mb-2">Público Objetivo</h2>
+                            <p class="text-slate-400">¿A quién le resolvemos la vida?</p>
+                        </div>
+                        <div class="hidden md:block">
+                            <!-- Chart Legend can go here if needed -->
+                        </div>
+                    </div>
+
+                    <div class="grid lg:grid-cols-3 gap-6">
+                        <!-- Card 1 -->
+                        <div class="glass-panel p-8 rounded-3xl hover:bg-slate-800/50 transition-colors group cursor-default">
+                            <div class="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-blue-500 transition-colors">
+                                <i class="fa-solid fa-children text-blue-400 group-hover:text-white text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-3">Familias & Padres</h3>
+                            <p class="text-slate-400 text-sm leading-relaxed mb-4">
+                                Buscan tranquilidad mental. Seguridad inteligente para hijos (ej. Hipólito y Carmela) y monitoreo remoto cuando la casa queda sola.
+                            </p>
+                            <span class="text-xs font-mono text-blue-400 bg-blue-400/10 px-2 py-1 rounded">Prioridad: Seguridad</span>
+                        </div>
+
+                        <!-- Card 2 -->
+                        <div class="glass-panel p-8 rounded-3xl hover:bg-slate-800/50 transition-colors group cursor-default">
+                            <div class="w-12 h-12 bg-indigo-500/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-indigo-500 transition-colors">
+                                <i class="fa-solid fa-laptop-code text-indigo-400 group-hover:text-white text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-3">Pros IT & Early Adopters</h3>
+                            <p class="text-slate-400 text-sm leading-relaxed mb-4">
+                                Valoran la estética <em>Tech-Premium</em>. Quieren optimizar su flujo de trabajo y tener el control total de su entorno.
+                            </p>
+                            <span class="text-xs font-mono text-indigo-400 bg-indigo-400/10 px-2 py-1 rounded">Prioridad: Innovación</span>
+                        </div>
+
+                        <!-- Card 3 -->
+                        <div class="glass-panel p-8 rounded-3xl hover:bg-slate-800/50 transition-colors group cursor-default">
+                            <div class="w-12 h-12 bg-green-500/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-green-500 transition-colors">
+                                <i class="fa-solid fa-leaf text-green-400 group-hover:text-white text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-3">Hogares Eficientes</h3>
+                            <p class="text-slate-400 text-sm leading-relaxed mb-4">
+                                Afectados por las tarifas de energía. Buscan automatizar aires y luces para ver un ahorro real a fin de mes.
+                            </p>
+                            <span class="text-xs font-mono text-green-400 bg-green-400/10 px-2 py-1 rounded">Prioridad: Ahorro</span>
+                        </div>
+                    </div>
+
+                    <!-- Visualization: Target Distribution (Hypothetical) -->
+                    <div class="mt-12 bg-slate-900 rounded-3xl p-8 border border-slate-800 flex flex-col md:flex-row items-center gap-10">
+                        <div class="w-full md:w-1/2">
+                            <h4 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Proyección de Impacto</h4>
+                            <p class="text-sm text-slate-500 mb-6">
+                                Estimación de la distribución del mercado inicial en Santa Fe basada en necesidades actuales (Inseguridad + Costo Energético).
+                            </p>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-white"><i class="fa-solid fa-circle text-blue-500 text-[10px] mr-2"></i> Seguridad Familiar</span>
+                                    <span class="font-mono text-slate-400">45%</span>
+                                </div>
+                                <div class="w-full bg-slate-800 rounded-full h-1.5">
+                                    <div class="bg-blue-500 h-1.5 rounded-full" style="width: 45%"></div>
+                                </div>
+
+                                <div class="flex items-center justify-between text-sm pt-2">
+                                    <span class="text-white"><i class="fa-solid fa-circle text-green-500 text-[10px] mr-2"></i> Ahorro Energético</span>
+                                    <span class="font-mono text-slate-400">35%</span>
+                                </div>
+                                <div class="w-full bg-slate-800 rounded-full h-1.5">
+                                    <div class="bg-green-500 h-1.5 rounded-full" style="width: 35%"></div>
+                                </div>
+
+                                <div class="flex items-center justify-between text-sm pt-2">
+                                    <span class="text-white"><i class="fa-solid fa-circle text-indigo-500 text-[10px] mr-2"></i> Tech Lifestyle</span>
+                                    <span class="font-mono text-slate-400">20%</span>
+                                </div>
+                                <div class="w-full bg-slate-800 rounded-full h-1.5">
+                                    <div class="bg-indigo-500 h-1.5 rounded-full" style="width: 20%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w-full md:w-1/2 flex justify-center">
+                            <div class="chart-container">
+                                <canvas id="targetChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECTION 3: SCOPE (3 PILLARS) -->
+                <section id="scope" class="scroll-mt-24">
+                    <h2 class="text-3xl font-bold text-white mb-10 border-l-4 border-indigo-500 pl-4">Alcance Operativo</h2>
+                    
+                    <div class="grid md:grid-cols-3 gap-0 rounded-3xl overflow-hidden border border-slate-800 divide-y md:divide-y-0 md:divide-x divide-slate-800 bg-slate-900/30">
+                        
+                        <!-- Pillar 1 -->
+                        <div class="p-8 hover:bg-slate-800 transition-colors group relative overflow-hidden">
+                            <div class="absolute top-0 right-0 p-20 bg-blue-500/5 rounded-full blur-3xl -mr-10 -mt-10 group-hover:bg-blue-500/10 transition-colors"></div>
+                            <i class="fa-solid fa-shield-halved text-4xl text-blue-500 mb-6"></i>
+                            <h3 class="text-lg font-bold text-white mb-2">Seguridad Inteligente</h3>
+                            <div class="text-xs font-mono text-blue-400 mb-4">Ojo de Halcón IA</div>
+                            <p class="text-slate-400 text-sm leading-relaxed">
+                                Cámaras con visión computacional. Distinción entre humanos y mascotas. Sin falsas alertas.
+                            </p>
+                        </div>
+
+                        <!-- Pillar 2 -->
+                        <div class="p-8 hover:bg-slate-800 transition-colors group relative overflow-hidden">
+                            <div class="absolute top-0 right-0 p-20 bg-orange-500/5 rounded-full blur-3xl -mr-10 -mt-10 group-hover:bg-orange-500/10 transition-colors"></div>
+                            <i class="fa-solid fa-temperature-arrow-down text-4xl text-orange-500 mb-6"></i>
+                            <h3 class="text-lg font-bold text-white mb-2">Clima & Ahorro</h3>
+                            <div class="text-xs font-mono text-orange-400 mb-4">Control Neural</div>
+                            <p class="text-slate-400 text-sm leading-relaxed">
+                                Transformación de aires viejos en smart. Aprendizaje de rutinas para optimizar consumo.
+                            </p>
+                        </div>
+
+                        <!-- Pillar 3 -->
+                        <div class="p-8 hover:bg-slate-800 transition-colors group relative overflow-hidden">
+                            <div class="absolute top-0 right-0 p-20 bg-purple-500/5 rounded-full blur-3xl -mr-10 -mt-10 group-hover:bg-purple-500/10 transition-colors"></div>
+                            <i class="fa-regular fa-lightbulb text-4xl text-purple-500 mb-6"></i>
+                            <h3 class="text-lg font-bold text-white mb-2">Iluminación Viva</h3>
+                            <div class="text-xs font-mono text-purple-400 mb-4">Ambientes Dinámicos</div>
+                            <p class="text-slate-400 text-sm leading-relaxed">
+                                Sincronización con ritmos circadianos. Descanso mejorado y productividad lumínica.
+                            </p>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- SECTION 4: ROADMAP -->
+                <section id="roadmap" class="scroll-mt-24 pb-20">
+                    <h2 class="text-3xl font-bold text-white mb-12">Estado & Futuro</h2>
+
+                    <div class="relative border-l border-slate-800 ml-3 md:ml-6 space-y-12">
+                        
+                        <!-- Milestone 1: Current -->
+                        <div class="relative pl-8 md:pl-12">
+                            <div class="absolute -left-[9px] top-0 w-5 h-5 rounded-full bg-cyan-500 shadow-[0_0_10px_rgba(34,211,238,0.8)]"></div>
+                            <div class="mb-2 flex items-center gap-3">
+                                <span class="text-cyan-400 font-mono text-sm font-bold">FASE ACTUAL</span>
+                                <span class="bg-cyan-500/10 text-cyan-400 text-[10px] px-2 py-0.5 rounded border border-cyan-500/20">MVP Activo</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-4">Prototipo Funcional</h3>
+                            <ul class="space-y-3">
+                                <li class="flex items-start text-sm text-slate-400">
+                                    <i class="fa-solid fa-check text-green-500 mt-1 mr-3"></i>
+                                    <span>Dominio <strong>gadgetsia.com.ar</strong> activo.</span>
+                                </li>
+                                <li class="flex items-start text-sm text-slate-400">
+                                    <i class="fa-solid fa-check text-green-500 mt-1 mr-3"></i>
+                                    <span>Landing Page React con estética <em>Dark Tech</em>.</span>
+                                </li>
+                                <li class="flex items-start text-sm text-slate-400">
+                                    <i class="fa-solid fa-check text-green-500 mt-1 mr-3"></i>
+                                    <span>Sistema de conversión: Configurador + Checkout Simulado.</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Milestone 2: Technical Future -->
+                        <div class="relative pl-8 md:pl-12">
+                            <div class="absolute -left-[9px] top-0 w-5 h-5 rounded-full bg-slate-800 border-2 border-slate-600"></div>
+                            <div class="mb-2">
+                                <span class="text-indigo-400 font-mono text-sm font-bold">PRÓXIMA FASE</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-4">Evolución Técnica</h3>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
+                                    <div class="font-bold text-white mb-1"><i class="fa-solid fa-plug text-indigo-500 mr-2"></i> Integraciones Reales</div>
+                                    <p class="text-xs text-slate-500">Conexión API con Mercado Pago para cobros automatizados.</p>
+                                </div>
+                                <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
+                                    <div class="font-bold text-white mb-1"><i class="fa-solid fa-robot text-indigo-500 mr-2"></i> IA Asesoramiento</div>
+                                    <p class="text-xs text-slate-500">Chatbot (Gemini API) entrenado con manuales técnicos para soporte 24/7.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Milestone 3: The Vision -->
+                        <div class="relative pl-8 md:pl-12">
+                            <div class="absolute -left-[9px] top-0 w-5 h-5 rounded-full bg-slate-800 border-2 border-slate-600"></div>
+                            <div class="mb-2">
+                                <span class="text-purple-400 font-mono text-sm font-bold">OBJETIVO FINAL</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-4">Liderazgo Regional</h3>
+                            <p class="text-slate-400 text-sm leading-relaxed mb-4">
+                                Convertirse en sinónimo de "tecnología que funciona" en el interior del país. No competir por precio (box moving), sino por <strong>Confianza Técnica</strong>.
+                            </p>
+                            <div class="glass-panel p-4 rounded-xl border-l-4 border-purple-500">
+                                <p class="text-white text-sm italic">
+                                    "Lograr que cada casa en Santa Fe tenga un 'cerebro' inteligente que cuide a los suyos y su bolsillo."
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- Footer Context -->
+                <footer class="border-t border-slate-800 pt-12 pb-20 text-center">
+                    <div class="inline-flex items-center gap-3 opacity-60 mb-4">
+                        <i class="fa-solid fa-code text-indigo-500"></i>
+                        <span class="text-slate-500 text-sm">Desarrollado por <strong>Mariano | MDI Solutions</strong></span>
+                    </div>
+                    <p class="text-xs text-slate-600 font-mono">Santa Fe, Argentina - 2026</p>
+                </footer>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Visualization & Content Choices:
+         - Goal: Visualize the hypothetical market split to emphasize the business strategy.
+         - Method: Doughnut Chart (Chart.js).
+         - Justification: Best for showing proportions of a whole (Total Market). Interactive tooltips provide details.
+         - Supporting Structure: Placed in the "Target Audience" section to visualize the data discussed in the cards.
+    -->
+    <script>
+        // --- Navigation Logic ---
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // --- Intersection Observer for Active Nav State ---
+        const observerOptions = {
+            root: document.getElementById('main-scroll'),
+            rootMargin: '-20% 0px -60% 0px', // Trigger when section is near top
+            threshold: 0
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Remove active class from all
+                    document.querySelectorAll('.nav-item').forEach(el => {
+                        el.classList.remove('nav-active');
+                    });
+                    // Add active class to current
+                    const navId = 'nav-' + entry.target.id;
+                    const navEl = document.getElementById(navId);
+                    if (navEl) navEl.classList.add('nav-active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // --- Chart.js Visualization ---
+        // Context: Visualizing the strategic focus distribution mentioned in the Target Audience section.
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('targetChart').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Seguridad Familiar', 'Ahorro Energético', 'Tech Lifestyle'],
+                    datasets: [{
+                        data: [45, 35, 20], // Hypothetical data mirroring the progress bars
+                        backgroundColor: [
+                            'rgba(59, 130, 246, 0.8)', // Blue (Security)
+                            'rgba(34, 197, 94, 0.8)',  // Green (Energy)
+                            'rgba(99, 102, 241, 0.8)'  // Indigo (Tech)
+                        ],
+                        borderColor: '#0f172a', // Matches bg color
+                        borderWidth: 4,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false // Custom legend built in HTML for better styling
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            titleColor: '#fff',
+                            bodyColor: '#cbd5e1',
+                            padding: 12,
+                            borderColor: 'rgba(148, 163, 184, 0.1)',
+                            borderWidth: 1,
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.label}: ${context.raw}% del enfoque`;
+                                }
+                            }
+                        }
+                    },
+                    cutout: '70%', // Thinner ring for modern look
+                }
+            });
+        });
+    </script>
+
+    <!-- CONFIRMATION: NO SVG graphics used (using FontAwesome font). NO Mermaid JS used. -->
+</body>
+</html>
