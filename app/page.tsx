@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import { 
   Shield, 
   Zap, 
@@ -22,14 +23,21 @@ import {
   Instagram,
   CreditCard,
   MapPin,
-  Truck
+  Truck,
+  AlertCircle,
+  ThermometerSun,
+  ZapOff,
+  UserX
 } from 'lucide-react';
 
-// --- CONFIGURACIÓN ---
+// --- CONFIGURATION ---
 const WHATSAPP_NUMBER = "5493426115800"; 
 
 // --- UTILS & HOOKS ---
 
+/**
+ * Hook to handle scroll reveal animations
+ */
 const useReveal = (): [React.RefObject<HTMLDivElement | null>, boolean] => {
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -74,17 +82,20 @@ const Reveal: React.FC<RevealProps> = ({ children, delay = 0 }) => {
   );
 };
 
+/**
+ * Custom technological cursor effect
+ */
 const TechCursor = () => {
   const [position, setPosition] = useState({ x: -100, y: -100 });
   const [isHovering, setIsHovering] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const updatePosition = (e) => {
+    const updatePosition = (e: MouseEvent) => {
       setPosition({ x: e.clientX, y: e.clientY });
       setIsVisible(true);
       
-      const target = e.target;
+      const target = e.target as HTMLElement;
       const isClickable = 
         target.tagName === 'BUTTON' || 
         target.tagName === 'A' || 
@@ -150,7 +161,18 @@ const PRODUCTS = {
   }
 };
 
-const PILLARS = [
+type ProductId = keyof typeof PRODUCTS;
+
+const PILLARS: Array<{
+  id: ProductId;
+  icon: React.ReactNode;
+  title: string;
+  desc: string;
+  color: string;
+  borderColor: string;
+  glowColor: string;
+  textColor: string;
+}> = [
   {
     id: 'security',
     icon: <Scan className="w-8 h-8" />,
@@ -208,13 +230,13 @@ const Header = ({ onOpenCart }: HeaderProps) => (
         <BrandLogo />
         
         <div className="hidden md:flex space-x-8 items-center">
-          <a href="#problem" className="text-xs font-bold text-slate-400 hover:text-white transition tracking-widest hover:scale-105 transform">EL PROBLEMA</a>
-          <a href="#pillars" className="text-xs font-bold text-slate-400 hover:text-white transition tracking-widest hover:scale-105 transform">SOLUCIONES</a>
+          <Link href="#problem" className="text-xs font-bold text-slate-400 hover:text-white transition tracking-widest hover:scale-105 transform">EL PROBLEMA</Link>
+          <Link href="#pillars" className="text-xs font-bold text-slate-400 hover:text-white transition tracking-widest hover:scale-105 transform">SOLUCIONES</Link>
           <div className="h-4 w-px bg-slate-800"></div>
-          <a href="#wizard" className="text-xs font-bold text-indigo-400 hover:text-indigo-300 transition tracking-widest flex items-center gap-2 hover:scale-105 transform">
+          <Link href="#wizard" className="text-xs font-bold text-indigo-400 hover:text-indigo-300 transition tracking-widest flex items-center gap-2 hover:scale-105 transform">
             <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
             ARMAR KIT
-          </a>
+          </Link>
         </div>
         
         <div className="flex items-center gap-4">
@@ -231,8 +253,12 @@ const Header = ({ onOpenCart }: HeaderProps) => (
   </nav>
 );
 
-const Hero = ({ onStart }) => (
-  <div className="relative min-h-screen flex items-center justify-center overflow-hidden" id="problem">
+interface HeroProps {
+  onStart: () => void;
+}
+
+const Hero = ({ onStart }: HeroProps) => (
+  <div className="relative min-h-screen flex items-center justify-center overflow-hidden" id="hero">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center pt-20">
       <Reveal>
         <div className="inline-flex items-center px-4 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-950/30 text-indigo-300 mb-8 backdrop-blur-sm shadow-[0_0_15px_rgba(99,102,241,0.2)]">
@@ -270,6 +296,58 @@ const Hero = ({ onStart }) => (
     <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] z-0 pointer-events-none"></div>
     <div className="absolute inset-0 bg-slate-950 [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,transparent_70%,black_100%)] z-0 pointer-events-none"></div>
   </div>
+);
+
+/**
+ * Problem Section: Addressing the pain points of the local market
+ */
+const ProblemSection = () => (
+  <section className="min-h-screen flex items-center justify-center py-8 sm:py-12 bg-slate-950 relative border-t border-slate-900 snap-start" id="problem">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <Reveal>
+        <div className="text-center mb-16">
+          <h2 className="text-xs font-black text-indigo-500 uppercase tracking-[0.3em] mb-4">¿Te suena familiar?</h2>
+          <h3 className="text-3xl sm:text-5xl font-black text-white tracking-tight mb-8">Vivir en el 2026 con tecnología del 2010.</h3>
+          <div className="w-24 h-1 bg-gradient-to-r from-indigo-500 to-cyan-500 mx-auto my-8"></div>
+        </div>
+      </Reveal>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+        {[
+          { 
+            icon: <ZapOff className="w-6 h-6 text-orange-400" />, 
+            title: "Facturas que asustan", 
+            text: "El costo de la luz en Santa Fe no perdona. Aires prendidos en habitaciones vacías son pesos que se van." 
+          },
+          { 
+            icon: <UserX className="w-6 h-6 text-red-400" />, 
+            title: "Miedo a la ausencia", 
+            text: "¿Entraron? ¿El perro está bien? La incertidumbre de dejar la casa sola es un peso constante." 
+          },
+          { 
+            icon: <Smartphone className="w-6 h-6 text-blue-400" />, 
+            title: "Instalaciones de pesadilla", 
+            text: "Comprar tech por internet y que el manual esté en chino o los cables no coincidan. Frustración total." 
+          },
+          { 
+            icon: <ThermometerSun className="w-6 h-6 text-yellow-400" />, 
+            title: "El calor litoral", 
+            text: "Llegar a casa con 40°C y esperar 20 minutos a que el aire enfríe. Un lujo innecesario que podemos evitar." 
+          }
+        ].map((item, idx) => (
+          <Reveal key={idx} delay={idx * 150}>
+            <div className="h-full p-8 bg-slate-900/50 border border-slate-800 rounded-3xl hover:border-slate-700 transition-all group hover:translate-y-[-8px] hover:shadow-[0_10px_30px_-10px_rgba(99,102,241,0.2)]">
+              <div className="w-12 h-12 bg-slate-800 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                {item.icon}
+              </div>
+              <h4 className="text-xl font-bold text-white mb-4 tracking-tight">{item.title}</h4>
+              <p className="text-slate-400 text-sm leading-relaxed">{item.text}</p>
+            </div>
+          </Reveal>
+        ))}
+      </div>
+    </div>
+  </section>
 );
 
 interface PillarCardProps {
@@ -508,7 +586,7 @@ const Wizard: React.FC<WizardProps> = ({ onBuy }) => {
   const recommended = selections.focus === 'security' ? PRODUCTS.security : selections.focus === 'climate' ? PRODUCTS.climate : PRODUCTS.lighting;
 
   return (
-    <div id="wizard" className="py-32 bg-slate-950 relative border-t border-slate-900 scroll-mt-20">
+    <div id="wizard" className="py-16 sm:py-24 bg-slate-950 relative border-t border-slate-900 scroll-mt-20">
       <div className="max-w-4xl mx-auto px-4">
         <Reveal>
           <div className="text-center mb-16">
@@ -646,21 +724,36 @@ const Wizard: React.FC<WizardProps> = ({ onBuy }) => {
 // --- MAIN APP ---
 
 export default function App() {
-  const [showWizard, setShowWizard] = useState<boolean>(false);
   const [checkoutProduct, setCheckoutProduct] = useState<Product | null>(null);
 
   useEffect(() => {
     document.title = "GadgetsIA | Smart Tech Santa Fe";
   }, []);
 
+  const handleStart = () => {
+    const wizardElement = document.getElementById('wizard');
+    if (wizardElement) {
+      wizardElement.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-50 font-sans selection:bg-cyan-500/30 md:cursor-none overflow-x-hidden">
       <TechCursor />
-      <CheckoutModal isOpen={!!checkoutProduct} product={checkoutProduct} onClose={() => setCheckoutProduct(null)} />
+      
+      <CheckoutModal 
+        isOpen={!!checkoutProduct} 
+        product={checkoutProduct} 
+        onClose={() => setCheckoutProduct(null)} 
+      />
+      
       <Header onOpenCart={() => alert('Próximamente: Historial de pedidos GadgetsIA.')} />
       
       <main>
-        <Hero onStart={() => document.getElementById('wizard').scrollIntoView({ behavior: 'smooth' })} />
+        <Hero onStart={handleStart} />
+        
+        {/* NEW: Problem Section */}
+        <ProblemSection />
 
         <section id="pillars" className="py-40 bg-slate-950 relative overflow-hidden">
           <div className="max-w-7xl mx-auto px-4 relative z-10">
@@ -678,7 +771,11 @@ export default function App() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
               {PILLARS.map((p, idx) => (
                 <Reveal key={p.id} delay={idx * 150}>
-                  <PillarCard {...p} features={PRODUCTS[p.id].features} price={PRODUCTS[p.id].price} />
+                  <PillarCard 
+                    {...p} 
+                    features={PRODUCTS[p.id].features} 
+                    price={PRODUCTS[p.id].price} 
+                  />
                 </Reveal>
               ))}
             </div>
